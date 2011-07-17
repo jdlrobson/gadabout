@@ -345,7 +345,8 @@ function cleanupHTMLSerialization() {
 		}
 		// remove bad links
 		var text = $(el).text();
-		if(["SiteTitle", "viewer", "editor", "ServerSettings", "SiteIcon", space + "SetupFlag" ].indexOf(text) > -1) {
+		if(["SiteTitle", "viewer", "editor", "ServerSettings",
+			"SiteIcon", space + "SetupFlag" ].indexOf(text) > -1) {
 			$(el).parent("li").remove();
 		}
 	});
@@ -371,7 +372,8 @@ function cleanupHTMLSerialization() {
 				for(var i = 0; i < tiddlers.length; i++) {
 					var tiddler = tiddlers[i];
 					var item = $("<li/>").appendTo(list)[0];
-					$("<a />").attr("href", "/recipes/" + tiddler.bag + "/tiddlers/" + tiddler.title).text(tiddler.title).appendTo(item);
+					$("<a />").attr("href", "/recipes/" + tiddler.bag + "/tiddlers/" + tiddler.title).
+						text(tiddler.title).appendTo(item);
 				}
 			}
 		});
@@ -386,7 +388,8 @@ function constructMenu(newbutton) {
 	if(newbutton) {
 		$("<a href='/editor' />").addClass("externalLink newButton").text("add note").appendTo(menu);
 	} else {
-		$("<a href=\"/editor" + window.location.hash + "\" />").addClass("externalLink editButton").
+		$("<a href=\"/editor" + window.location.hash + "\" />").
+			addClass("externalLink editButton").
 			text("edit note").appendTo(menu);
 	}
 }
@@ -449,9 +452,11 @@ function printUrl(url) {
 				$("#createLink").remove();
 				$("#window").empty();
 				$("<h2>Missing Note</h2>").appendTo("#window");
-				$("<div />").text("This note hasn't been fleshed out yet.").appendTo("#window");
+				$("<div />").text("This note hasn't been fleshed out yet.").
+					appendTo("#window");
 				$("<a id='createLink' />").addClass("externalLink").
-					attr("href", "/editor#!" + url).text(locale.createlinktext).appendTo("#window");
+					attr("href", "/editor#!" + url).
+					text(locale.createlinktext).appendTo("#window");
 			} else {
 				success(url);
 			}
