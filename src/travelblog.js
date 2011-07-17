@@ -226,6 +226,12 @@ function makeTiddlyLink(el) {
 function isTiddlyLink(el) {
 	var href = $(el).attr("href") || "";
 	var hasClass = $(el).hasClass("externalLink");
+	var hostLocation = window.location.protocol + "//" + window.location.host;
+	if(hasClass &&
+		href.indexOf(hostLocation) === 0) {
+		href = href.substr(hostLocation.length, href.length);
+		hasClass = false;
+	}
 	return !hasClass && href.indexOf("/") === 0 ? true : false;
 }
 
