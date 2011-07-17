@@ -230,6 +230,7 @@ function isTiddlyLink(el) {
 	if(hasClass &&
 		href.indexOf(hostLocation) === 0) {
 		href = href.substr(hostLocation.length, href.length);
+		$(el).attr("href", href);
 		hasClass = false;
 	}
 	var notTiddlyLink = $(el).hasClass("notTiddlyLink");
