@@ -1,4 +1,5 @@
-// version 0.1.0
+// version 0.1.1
+// https://raw.github.com/jdlrobson/gadabout/master/src/travelblog.js
 
 var cache = {};
 var space = document.location.host.split(".")[0];
