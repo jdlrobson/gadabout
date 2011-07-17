@@ -395,7 +395,8 @@ function constructMenu(newbutton) {
 }
 
 function loadUrl(url, callback, options) {
-	if(url.substr(url.length - 5, url.length) === ".form") {
+	var match = url.match(/\/tiddlers\.form/);
+	if(match && match[0]){
 		cache[url] = "Unsupported page";
 		if(callback) {
 			callback(r);
