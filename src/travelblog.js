@@ -232,7 +232,8 @@ function isTiddlyLink(el) {
 		href = href.substr(hostLocation.length, href.length);
 		hasClass = false;
 	}
-	return !hasClass && href.indexOf("/") === 0 ? true : false;
+	var notTiddlyLink = $(el).hasClass("notTiddlyLink");
+	return !notTiddlyLink && !hasClass && href.indexOf("/") === 0 ? true : false;
 }
 
 function clickTiddlyLink(ev)  {
@@ -343,7 +344,7 @@ function cleanupHTMLSerialization() {
 	links.each(function(i, el) {
 		if(isTiddlyLink(el)) {
 			var url = $(el).attr("href");
-			$(el).addClass("activeTiddlyLink").css({ "font-style": "italic", "font-weight": "bold" });
+			$(el).addClass("activeTiddlyLink");
 			if(loaded < 10) { // pre load first 10 links for SPEED
 				loadUrl(url);
 				loaded += 1;
@@ -383,6 +384,11 @@ function cleanupHTMLSerialization() {
 				}
 			}
 		});
+	}
+	var headerLink = $("#header h1 a");
+	if(headerLink) {
+		$(headerLink).removeClass("activeTiddlyLink").addClass("notTiddlyLink");
+		$(headerLink).attr("href", "/" + $(headerLink).text());
 	}
 	$("#links").remove();
 }
