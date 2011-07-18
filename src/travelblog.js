@@ -413,7 +413,7 @@ function transformDefaultHtml(url) {
 function printUrl(url) {
 	//console.log(url);
 	$("#window").empty().text("loading...");
-	history.pushState(null, null, url);
+	history.pushState({ url: url }, null, url);
 	function success(url) {
 		var r = cache[url]
 		var doc = $(r);
@@ -486,6 +486,18 @@ function setup() {
 	});
 }
 $(document).ready(function() {
+	window.onpopstate = function(ev) {
+		var url;
+		if(ev.state && ev.state.url) {
+			url = ev.state.url;
+		} else if(cache[window.location.pathname]) {
+			url = window.location.pathname;
+		}
+		if(url) {
+			printUrl(url);
+		}
+		ev.preventDefault();
+	}
 	setup();
 	if($("#window-edit").length > 0) {
 		makeEditorArea();
