@@ -226,6 +226,7 @@ function printMap(url) {
 	var lat = parseFloat($(".meta .geo .latitude").text(), 10);
 	var maparea = $("<div />").addClass("mapArea").prependTo("#article")[0];
 	$("<div id='mapdiv' />").appendTo(maparea);
+	OpenLayers.ImgPath = "/";
 	map = new OpenLayers.Map("mapdiv");
 	map.addLayer(new OpenLayers.Layer.OSM()); 
 	zoom = 8;
