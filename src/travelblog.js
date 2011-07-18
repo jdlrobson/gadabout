@@ -495,7 +495,8 @@ function setup() {
 			"<div id='SiteInfo'></div>",
 			"<!--HEADER-->",
 			"<hr/>",
-			"<a id='listLink' href='/tiddlers'>list travel notes</a>",
+			"<a id='listLink' href='/tiddlers?select=tag:!excludeLists",
+			"&select=bag:!takenote_public&sort=title'>list travel notes</a>",
 			"<hr/>",
 			"<div id='window'></div>",
 		"</div>"].join(""));
@@ -512,8 +513,6 @@ function setup() {
 			$("#SiteInfo").text(tiddler.text);
 		}
 	});
-	$("#listLink").attr("href", "/recipes/" + space + "_public/tiddlers?select=tag:!excludeLists" +
-		"&select=bag:!takenote_public&sort=title");
 }
 $(document).ready(function() {
 	setup();
