@@ -374,7 +374,7 @@ function constructMenu(newbutton) {
 	if(newbutton) {
 		$("<a href='/editor' />").addClass("externalLink newButton").text("add note").appendTo(menu);
 	} else {
-		$("<a href=\"/editor" + window.location.hash + "\" />").
+		$("<a href=\"/editor#" + window.location.pathname + "\" />").
 			addClass("externalLink editButton").
 			text("edit note").appendTo(menu);
 	}
@@ -454,26 +454,28 @@ function printUrl(url) {
 	}
 }
 
-function setup() {
-	if($("#win").length === 0) {
-		var body = $("#container").html();
-		$(document.body).html(["<div id='tbbody'>",
-			"<!--HEADER-->",
-			"<div id='siteheading'>",
-				"<div id='SiteIcon'></div>",
-				"<h1 id='siteTitle'></h1>",
-			"</div>",
-			"<div id='SiteInfo'></div>",
-			"<!--HEADER-->",
-			"<hr/>",
-			"<a id='listLink' href='/tiddlers?select=tag:!excludeLists",
-			"&select=bag:!takenote_public&sort=title'>list travel notes</a>",
-			"<hr/>",
-			"<div id='window'></div>",
-		"</div>"].join(""));
-		$("#window").html(body);
+function setup(editmode) {
+	if(!editmode) {
+		if($("#win").length === 0) {
+			var body = $("#container").html();
+			$(document.body).html(["<div id='tbbody'>",
+				"<!--HEADER-->",
+				"<div id='siteheading'>",
+					"<div id='SiteIcon'></div>",
+					"<h1 id='siteTitle'></h1>",
+				"</div>",
+				"<div id='SiteInfo'></div>",
+				"<!--HEADER-->",
+				"<hr/>",
+				"<a id='listLink' href='/tiddlers?select=tag:!excludeLists",
+				"&select=bag:!takenote_public&sort=title'>list travel notes</a>",
+				"<hr/>",
+				"<div id='window'></div>",
+			"</div>"].join(""));
+			$("#window").html(body);
+		}
+		transformDefaultHtml(window.location.path);
 	}
-	transformDefaultHtml(window.location.path);
 	$.ajax({ url: "/SiteTitle", dataType: "json",
 		success: function(tiddler) {
 			$("#siteTitle").text(tiddler.text);
@@ -498,8 +500,10 @@ $(document).ready(function() {
 		}
 		ev.preventDefault();
 	}
-	setup();
-	if($("#window-edit").length > 0) {
+	var editmode = $("#window-edit").length > 0;
+	setup(editmode);
+	
+	if(editmode) {
 		makeEditorArea();
 	} else {
 		makeTiddlyLink($("#listLink")[0]);
