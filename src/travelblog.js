@@ -434,6 +434,11 @@ function loadUrl(url, callback, options) {
 		}
 	});
 }
+function transformDefaultHtml(url) {
+	cleanupHTMLSerialization();
+	printMap(url);
+	$(".meta").remove();
+}
 function printUrl(url) {
 	//console.log(url);
 	$("#window").empty().text("loading...");
@@ -456,9 +461,7 @@ function printUrl(url) {
 			$("#header", container).appendTo(win);
 			$("#article", container).appendTo(win);
 		}
-		cleanupHTMLSerialization();
-		printMap(url);
-		$(".meta").remove();
+		transformDefaultHtml(url);
 	}
 	if(cache[url]) {
 		success(url);
@@ -498,6 +501,7 @@ function setup() {
 		"</div>"].join(""));
 		$("#window").html(body);
 	}
+	transformDefaultHtml(window.location.path);
 	$.ajax({ url: "/SiteTitle", dataType: "json",
 		success: function(tiddler) {
 			$("#siteTitle").text(tiddler.text);
