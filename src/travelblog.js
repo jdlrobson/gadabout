@@ -191,35 +191,6 @@ function makeEditorArea() {
 	});
 }
 
-function TiddlyPermaviewToHashBang(url) {
-	var decoded = decodeURIComponent(url);
-	if(decoded.indexOf("[[") === -1) {
-		return decoded;
-	}
-	var hashIndex = decoded.indexOf("#");
-	var hash = decoded.substr(hashIndex);
-	decoded = decoded.substr(1);
-	//console.log("decoded", decoded);
-	if(decoded.indexOf("[[") === 0 && decoded.indexOf("]]") == decoded.length - 2) {
-		// encountered tiddlywiki markup
-		hash = "#!/" + decoded.substring(2, decoded.length - 2);
-	}
-	return url.substring(0, hashIndex) + hash;
-}
-
-function loadHashBang(ev) {
-	var hash = window.location.hash;
-	if(!hash.substr(2)) {
-		window.location.hash = "!" + $("#listLink").attr("href");
-	}
-	var newhash = TiddlyPermaviewToHashBang(hash);
-	if(newhash != hash) {
-		window.location.hash = newhash;
-	}
-	var url = window.location.hash.substr(2);
-	printUrl(url);
-}
-
 function makeTiddlyLink(el) {
 	$(el).click(clickTiddlyLink);
 }
@@ -242,7 +213,7 @@ function isTiddlyLink(el) {
 function clickTiddlyLink(ev)  {
 	var href = $(ev.target).attr("href");
 	if(isTiddlyLink(ev.target)) {
-		printUrl(TiddlyPermaviewToHashBang(href));
+		printUrl(href);
 		ev.preventDefault();
 		return false;
 	}
@@ -442,7 +413,7 @@ function transformDefaultHtml(url) {
 function printUrl(url) {
 	//console.log(url);
 	$("#window").empty().text("loading...");
-	window.location.hash = "!" + url;
+	history.pushState(null, null, url);
 	function success(url) {
 		var r = cache[url]
 		var doc = $(r);
