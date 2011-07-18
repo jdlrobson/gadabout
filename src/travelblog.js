@@ -481,6 +481,23 @@ function printUrl(url) {
 }
 
 function setup() {
+	if($("#win").length === 0) {
+		var body = $("#container").html();
+		$(document.body).html(["<div id='tbbody'>",
+			"<!--HEADER-->",
+			"<div id='siteheading'>",
+				"<div id='SiteIcon'></div>",
+				"<h1 id='siteTitle'></h1>",
+			"</div>",
+			"<div id='SiteInfo'></div>",
+			"<!--HEADER-->",
+			"<hr/>",
+			"<a id='listLink' href='/tiddlers'>list travel notes</a>",
+			"<hr/>",
+			"<div id='window'></div>",
+		"</div>"].join(""));
+		$("#window").html(body);
+	}
 	$.ajax({ url: "/SiteTitle", dataType: "json",
 		success: function(tiddler) {
 			$("#siteTitle").text(tiddler.text);
