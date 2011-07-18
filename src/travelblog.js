@@ -513,11 +513,9 @@ function setup() {
 }
 $(document).ready(function() {
 	setup();
-	window.onhashchange = loadHashBang;
 	if($("#window-edit").length > 0) {
 		makeEditorArea();
 	} else {
 		makeTiddlyLink($("#listLink")[0]);
-		loadHashBang();
 	}
 });
