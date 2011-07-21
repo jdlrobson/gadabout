@@ -489,6 +489,13 @@ function setup(editmode) {
 			"</div>"].join(""));
 			$("#window").html(body);
 		}
+		var footerEl = $("<div />").addClass("footerbar").appendTo("#footer")[0];
+		$('<a href="/getyourown">get your own here!</a>').addClass("footerLink").
+			appendTo(footerEl);
+		$('<a href="/challenge/tiddlywebplugins.tiddlyspace.cookie_form?tiddlyweb_redirect=%2Ftiddlers">login</a>').
+			addClass("footerLink").appendTo(footerEl);
+		$('<a href="https://github.com/jdlrobson/gadabout">developers</a>').
+			addClass("footerLink").appendTo(footerEl);
 		transformDefaultHtml(window.location.path);
 	}
 	$.ajax({ url: "/SiteTitle", dataType: "json",
