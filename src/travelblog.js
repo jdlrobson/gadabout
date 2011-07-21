@@ -35,7 +35,7 @@ function storeEdit() {
 			url: url,
 			data: JSON.stringify(tiddler),
 			success: function(r) {
-				window.location = "/#!" + url;
+				window.location.pathname = url;
 				clearCache();
 			},
 			error: function() {
