@@ -375,7 +375,9 @@ function constructMenu(newbutton) {
 	if(newbutton) {
 		$("<a href='/editor' />").addClass("externalLink newButton").text("add note").appendTo(menu);
 	} else {
-		$("<a href=\"/editor#" + window.location.pathname + "\" />").
+		var path = window.location.pathname === "/" ?
+			"/" + encodeURIComponent($("#header h1 a").text()) : window.location.pathname;
+		$("<a href=\"/editor#" + path + "\" />").
 			addClass("externalLink editButton").
 			text("edit note").appendTo(menu);
 	}
