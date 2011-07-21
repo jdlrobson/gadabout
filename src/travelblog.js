@@ -413,7 +413,16 @@ function transformDefaultHtml(url) {
 	printMap(url);
 	$(".meta").remove();
 }
+
+function supports_history_api() {
+	return !!(window.history && history.pushState);
+}
+
 function printUrl(url) {
+	if(!supports_history_api()){
+		window.location.href = url;
+		return;
+	}
 	//console.log(url);
 	$("#window").empty().text("loading...");
 	history.pushState({ url: url }, null, url);
