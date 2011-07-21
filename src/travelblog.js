@@ -35,7 +35,7 @@ function storeEdit() {
 			url: url,
 			data: JSON.stringify(tiddler),
 			success: function(r) {
-				window.location = "/#!" + url;
+				window.location.pathname = url;
 				clearCache();
 			},
 			error: function() {
@@ -191,35 +191,6 @@ function makeEditorArea() {
 	});
 }
 
-function TiddlyPermaviewToHashBang(url) {
-	var decoded = decodeURIComponent(url);
-	if(decoded.indexOf("[[") === -1) {
-		return decoded;
-	}
-	var hashIndex = decoded.indexOf("#");
-	var hash = decoded.substr(hashIndex);
-	decoded = decoded.substr(1);
-	//console.log("decoded", decoded);
-	if(decoded.indexOf("[[") === 0 && decoded.indexOf("]]") == decoded.length - 2) {
-		// encountered tiddlywiki markup
-		hash = "#!/" + decoded.substring(2, decoded.length - 2);
-	}
-	return url.substring(0, hashIndex) + hash;
-}
-
-function loadHashBang(ev) {
-	var hash = window.location.hash;
-	if(!hash.substr(2)) {
-		window.location.hash = "!" + $("#listLink").attr("href");
-	}
-	var newhash = TiddlyPermaviewToHashBang(hash);
-	if(newhash != hash) {
-		window.location.hash = newhash;
-	}
-	var url = window.location.hash.substr(2);
-	printUrl(url);
-}
-
 function makeTiddlyLink(el) {
 	$(el).click(clickTiddlyLink);
 }
@@ -232,6 +203,7 @@ function isTiddlyLink(el) {
 		href.indexOf(hostLocation) === 0) {
 		href = href.substr(hostLocation.length, href.length);
 		$(el).attr("href", href);
+		$(el).removeClass("externalLink");
 		hasClass = false;
 	}
 	var notTiddlyLink = $(el).hasClass("notTiddlyLink");
@@ -241,7 +213,7 @@ function isTiddlyLink(el) {
 function clickTiddlyLink(ev)  {
 	var href = $(ev.target).attr("href");
 	if(isTiddlyLink(ev.target)) {
-		printUrl(TiddlyPermaviewToHashBang(href));
+		printUrl(href);
 		ev.preventDefault();
 		return false;
 	}
@@ -254,6 +226,7 @@ function printMap(url) {
 	var lat = parseFloat($(".meta .geo .latitude").text(), 10);
 	var maparea = $("<div />").addClass("mapArea").prependTo("#article")[0];
 	$("<div id='mapdiv' />").appendTo(maparea);
+	OpenLayers.ImgPath = "/";
 	map = new OpenLayers.Map("mapdiv");
 	map.addLayer(new OpenLayers.Layer.OSM()); 
 	zoom = 8;
@@ -265,7 +238,10 @@ function printMap(url) {
 				new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
 				map.getProjectionObject() // to Spherical Mercator Projection
 			);
-		var marker = new OpenLayers.Marker(lonLat);
+		var size = new OpenLayers.Size(8, 8);
+		var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+		var icon = new OpenLayers.Icon("/marker.png", size, offset);
+		var marker = new OpenLayers.Marker(lonLat, icon);
 		if(title) {
 			marker.events.register('dblclick', marker, function(ev) { 
 				printUrl("/" + title);
@@ -402,7 +378,9 @@ function constructMenu(newbutton) {
 	if(newbutton) {
 		$("<a href='/editor' />").addClass("externalLink newButton").text("add note").appendTo(menu);
 	} else {
-		$("<a href=\"/editor" + window.location.hash + "\" />").
+		var path = window.location.pathname === "/" ?
+			"/" + encodeURIComponent($("#header h1 a").text()) : window.location.pathname;
+		$("<a href=\"/editor#" + path + "\" />").
 			addClass("externalLink editButton").
 			text("edit note").appendTo(menu);
 	}
@@ -433,10 +411,24 @@ function loadUrl(url, callback, options) {
 		}
 	});
 }
+function transformDefaultHtml(url) {
+	cleanupHTMLSerialization();
+	printMap(url);
+	$(".meta").remove();
+}
+
+function supports_history_api() {
+	return !!(window.history && history.pushState);
+}
+
 function printUrl(url) {
+	if(!supports_history_api()){
+		window.location.href = url;
+		return;
+	}
 	//console.log(url);
 	$("#window").empty().text("loading...");
-	window.location.hash = "!" + url;
+	history.pushState({ url: url }, null, url);
 	function success(url) {
 		var r = cache[url]
 		var doc = $(r);
@@ -455,9 +447,7 @@ function printUrl(url) {
 			$("#header", container).appendTo(win);
 			$("#article", container).appendTo(win);
 		}
-		cleanupHTMLSerialization();
-		printMap(url);
-		$(".meta").remove();
+		transformDefaultHtml(url);
 	}
 	if(cache[url]) {
 		success(url);
@@ -479,7 +469,35 @@ function printUrl(url) {
 	}
 }
 
-function setup() {
+function setup(editmode) {
+	if(!editmode) {
+		if($("#win").length === 0) {
+			var body = $("#container").html();
+			$(document.body).html(["<div id='tbbody'>",
+				"<!--HEADER-->",
+				"<div id='siteheading'>",
+					"<div id='SiteIcon'></div>",
+					"<h1 id='siteTitle'></h1>",
+				"</div>",
+				"<div id='SiteInfo'></div>",
+				"<!--HEADER-->",
+				"<hr/>",
+				"<a id='listLink' href='/tiddlers?select=tag:!excludeLists",
+				"&select=bag:!takenote_public&sort=title'>list travel notes</a>",
+				"<hr/>",
+				"<div id='window'></div>",
+			"</div>"].join(""));
+			$("#window").html(body);
+		}
+		var footerEl = $("<div />").addClass("footerbar").appendTo("#footer")[0];
+		$('<a href="/getyourown">get your own here!</a>').addClass("footerLink").
+			appendTo(footerEl);
+		$('<a href="/challenge/tiddlywebplugins.tiddlyspace.cookie_form?tiddlyweb_redirect=%2Ftiddlers">login</a>').
+			addClass("footerLink").appendTo(footerEl);
+		$('<a href="https://github.com/jdlrobson/gadabout">developers</a>').
+			addClass("footerLink").appendTo(footerEl);
+		transformDefaultHtml(window.location.path);
+	}
 	$.ajax({ url: "/SiteTitle", dataType: "json",
 		success: function(tiddler) {
 			$("#siteTitle").text(tiddler.text);
@@ -490,16 +508,26 @@ function setup() {
 			$("#SiteInfo").text(tiddler.text);
 		}
 	});
-	$("#listLink").attr("href", "/recipes/" + space + "_public/tiddlers?select=tag:!excludeLists" +
-		"&select=bag:!takenote_public&sort=title");
 }
 $(document).ready(function() {
-	setup();
-	window.onhashchange = loadHashBang;
-	if($("#window-edit").length > 0) {
+	window.onpopstate = function(ev) {
+		var url;
+		if(ev.state && ev.state.url) {
+			url = ev.state.url;
+		} else if(cache[window.location.pathname]) {
+			url = window.location.pathname;
+		}
+		if(url) {
+			printUrl(url);
+		}
+		ev.preventDefault();
+	}
+	var editmode = $("#window-edit").length > 0;
+	setup(editmode);
+	
+	if(editmode) {
 		makeEditorArea();
 	} else {
 		makeTiddlyLink($("#listLink")[0]);
-		loadHashBang();
 	}
 });
