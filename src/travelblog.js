@@ -9,7 +9,8 @@ var locale = {
 	nointernet: "No internet connection!",
 	sharelinkprefix: "Saved successfully. Share it: ",
 	confirmdelete: "Delete this note forever? Yes forever is a scary word!",
-	createlinktext: "Create it?"
+	createlinktext: "Write new travel note with this name.",
+	reload: "Please try reloading this page."
 }
 var map, markers, zoom, connection_status = true;
 
@@ -391,7 +392,7 @@ function loadUrl(url, callback, options) {
 	if(match && match[0]){
 		cache[url] = "Unsupported page";
 		if(callback) {
-			callback(r);
+			callback(r,  textStatus, jqXHR);
 		}
 		return;
 	}
@@ -400,14 +401,14 @@ function loadUrl(url, callback, options) {
 	$.ajax({
 		url: url,
 		dataType: options.dataType || "html",
-		success: function(r) {
+		success: function(r,  textStatus, jqXHR) {
 			cache[url] = r;
 			if(callback) {
-				callback(r);
+				callback(r, textStatus, jqXHR);
 			}
 		},
-		error: function(r) {
-			return callback ? callback(false) : false;
+		error: function(r, textStatus, jqXHR) {
+			return callback ? callback(false, textStatus, jqXHR) : false;
 		}
 	});
 }
@@ -452,16 +453,21 @@ function printUrl(url) {
 	if(cache[url]) {
 		success(url);
 	} else {
-		loadUrl(url, function(tiddlers) {
+		loadUrl(url, function(tiddlers,  textStatus, jqXHR) {
 			if(!tiddlers) {
 				$("#createLink").remove();
 				$("#window").empty();
-				$("<h2>Missing Note</h2>").appendTo("#window");
-				$("<div />").text("This note hasn't been fleshed out yet.").
-					appendTo("#window");
-				$("<a id='createLink' />").addClass("externalLink").
-					attr("href", "/editor#!" + url).
-					text(locale.createlinktext).appendTo("#window");
+				if(jqXHR.status === 404) {
+					$("<h2>Missing</h2>").appendTo("#window");
+					$("<a id='createLink' />").addClass("externalLink").
+						attr("href", "/editor#!" + url).
+						text(locale.createlinktext).appendTo("#window");
+				} else {
+					$("<h2>Whoops!</h2>").appendTo("#window");
+					$("<a id='createLink' />").addClass("externalLink").
+						attr("href", window.location.href).
+						text(locale.reload).appendTo("#window");
+				}
 			} else {
 				success(url);
 			}
