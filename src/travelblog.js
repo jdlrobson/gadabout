@@ -407,8 +407,8 @@ function loadUrl(url, callback, options) {
 				callback(r, textStatus, jqXHR);
 			}
 		},
-		error: function(r, textStatus, jqXHR) {
-			return callback ? callback(false, textStatus, jqXHR) : false;
+		error: function(jqXHR) {
+			return callback ? callback(false, "", jqXHR) : false;
 		}
 	});
 }
