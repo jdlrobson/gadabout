@@ -228,7 +228,7 @@ function printMap(url) {
 	var maparea = $("<div />").addClass("mapArea").prependTo("#article")[0];
 	$("<div id='mapdiv' />").appendTo(maparea);
 	OpenLayers.ImgPath = "/";
-	map = new OpenLayers.Map("mapdiv");
+	map = new OpenLayers.Map("mapdiv", { theme: null });
 	map.addLayer(new OpenLayers.Layer.OSM()); 
 	zoom = 8;
 	markers = new OpenLayers.Layer.Markers( "Markers" );
