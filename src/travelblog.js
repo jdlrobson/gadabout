@@ -385,6 +385,8 @@ function constructMenu(newbutton) {
 		$("<a href=\"/editor#" + path + "\" />").
 			addClass("externalLink editButton").
 			text("edit note").appendTo(menu);
+		$('<a href="/configure">configure</a>').
+			addClass("externalLink configureButton").appendTo(menu);
 	}
 }
 
