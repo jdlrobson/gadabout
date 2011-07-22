@@ -483,7 +483,7 @@ function setup(editmode) {
 				"<!--HEADER-->",
 				"<div id='siteheading'>",
 					"<div id='SiteIcon'></div>",
-					"<h1 id='siteTitle'></h1>",
+					"<h1><a href='/' id='siteTitle'></a></h1>",
 				"</div>",
 				"<div id='SiteInfo'></div>",
 				"<!--HEADER-->",
