@@ -226,6 +226,7 @@ function printMap(url) {
 	var lng = parseFloat($(".meta .geo .longitude").text(), 10);
 	var lat = parseFloat($(".meta .geo .latitude").text(), 10);
 	var maparea = $("<div />").addClass("mapArea").prependTo("#article")[0];
+	$('<div class="end" />').appendTo("#article");
 	$("<div id='mapdiv' />").appendTo(maparea);
 	OpenLayers.ImgPath = "/";
 	map = new OpenLayers.Map("mapdiv", { theme: null });
