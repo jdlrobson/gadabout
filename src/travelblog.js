@@ -14,7 +14,7 @@ var locale = {
 }
 var map, markers, zoom, connection_status = true;
 
-var activeTiddler = {}, position = { latitude: null, longitude: null };
+var activeTiddler = {}, position = {};
 
 function getBag() {
 	return window.location.host.split(".")[0] + "_public";
@@ -75,10 +75,10 @@ function loadTiddler(callback) {
 }
 function getTiddler() {
 	var tiddler = activeTiddler;
-	if(position.latitude && !tiddler.fields['geo.lat']) {
+	if(typeof(position.latitude) != "undefined") {
 		tiddler.fields['geo.lat'] = position.latitude;
 	}
-	if(position.longitude && !tiddler.fields['geo.long']) {
+	if(typeof(position.longitude) != "undefined") {
 		tiddler.fields['geo.long'] = position.longitude;
 	}
 	return tiddler;
