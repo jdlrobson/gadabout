@@ -324,7 +324,6 @@ function printMap(url) {
 
 	var center;
 	if(lng && lat) {
-		$(maparea).show();
 		center = drawMarker(lng, lat, null);
 		map.setCenter(center, zoom);
 		var searchurl = "/search?q=near:"+ parseInt(lat,10) +
@@ -332,8 +331,6 @@ function printMap(url) {
 		loadUrl(searchurl, function(tiddlers) {
 				tiddlersToMarkers(tiddlers);
 			}, { dataType: "json" });
-	} else {
-		$(maparea).hide();
 	}
 	// add markers to map from the links in this tiddler
 	var titles = [];
