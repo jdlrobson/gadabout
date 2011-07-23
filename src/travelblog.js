@@ -199,6 +199,7 @@ function makeEditorArea() {
 		addDeleteButton(area);
 		makeTitleInput(area);
 		map = createMap(area);
+		markers = new OpenLayers.Layer.Markers( "Markers" );
 	});
 }
 
@@ -277,7 +278,7 @@ function printMap(url) {
 	var lat = parseFloat($(".meta .geo .latitude").text(), 10);
 	var maparea = $("<div />").addClass("mapArea").prependTo("#article")[0];
 	$('<div class="end" />').appendTo("#article");
-	var map = createMap(maparea);
+	map = createMap(maparea);
 	markers = new OpenLayers.Layer.Markers( "Markers" );
 	map.addLayer(markers);
 
