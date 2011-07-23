@@ -376,18 +376,14 @@ function cleanupHTMLSerialization() {
 function constructMenu(newbutton) {
 	$("#bar").remove();
 	var menu = $("<div id='bar' />").appendTo("#window")[0];
-	// $("<a href='/configure' />").addClass("externalLink newButton").text("customise").appendTo(menu);
-	if(newbutton) {
-		$("<a href='/editor' />").addClass("externalLink newButton").text("add note").appendTo(menu);
-	} else {
-		var path = window.location.pathname === "/" ?
-			"/" + encodeURIComponent($("#header h1 a").text()) : window.location.pathname;
-		$("<a href=\"/editor#" + path + "\" />").
-			addClass("externalLink editButton").
-			text("edit note").appendTo(menu);
-		$('<a href="/configure">configure</a>').
-			addClass("externalLink configureButton").appendTo(menu);
-	}
+	$("<a href='/editor' />").addClass("externalLink newButton").text("add note").appendTo(menu);
+	var path = window.location.pathname === "/" ?
+		"/" + encodeURIComponent($("#header h1 a").text()) : window.location.pathname;
+	$("<a href=\"/editor#" + path + "\" />").
+		addClass("externalLink editButton").
+		text("edit note").appendTo(menu);
+	$('<a href="/configure">customise</a>').
+		addClass("externalLink configureButton").appendTo(menu);
 }
 
 function loadUrl(url, callback, options) {
