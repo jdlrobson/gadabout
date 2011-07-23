@@ -152,7 +152,7 @@ function makeTitleInput(area) {
 		}).appendTo(area);
 	$("#edit-location input").hide();
 
-	$("<a href='#' />").text("Associate this note with a location").click(function(ev) {
+	$("<button class='geobutton' />").text("Associate this note with a location").click(function(ev) {
 			$("#edit-location-2").toggle();
 		}).appendTo(area);
 	$("<div id='edit-location-2' style='display: none;' />").geoSearch({
