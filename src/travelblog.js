@@ -412,16 +412,16 @@ function cleanupHTMLSerialization() {
 function constructMenu(newbutton) {
 	$("#bar").remove();
 	var menu = $("<div id='bar' />").appendTo("#window")[0];
-	$("<a href='/editor' />").addClass("externalLink newButton").text("add note").appendTo(menu);
+	$("<a href='/editor' />").addClass("externalLink newButton notTiddlyLink").text("add note").appendTo(menu);
 	var path = window.location.pathname === "/" ?
 		"/" + encodeURIComponent($("#header h1 a").text()) : window.location.pathname;
 	if($("#tiddlertext").length > 0) {
 		$("<a href=\"/editor#" + path + "\" />").
-			addClass("externalLink editButton").
+			addClass("externalLink editButton notTiddlyLink").
 			text("edit note").appendTo(menu);
 	}
 	$('<a href="/customise">customise</a>').
-		addClass("externalLink configureButton").appendTo(menu);
+		addClass("externalLink configureButton notTiddlyLink").appendTo(menu);
 }
 
 function loadUrl(url, callback, options) {
