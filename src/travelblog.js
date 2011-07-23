@@ -139,6 +139,8 @@ function makeTitleInput(area) {
 	var geohandler = function(r) {
 		position.latitude = r.lngLat.lat;
 		position.longitude = r.lngLat.lng;
+		var center = drawMarker(map, markers, lng, lat, null);
+		map.setCenter(center, zoom);
 	};
 
 	// make it find the location lat and lng
