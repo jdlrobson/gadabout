@@ -144,6 +144,7 @@ function makeTitleInput(area) {
 		position.longitude = r.lngLat.lng;
 		var center = drawMarker(position.longitude, position.latitude, null);
 		map.setCenter(center, zoom);
+		cacheEdit();
 	};
 
 	// make it find the location lat and lng
