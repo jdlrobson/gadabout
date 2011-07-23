@@ -139,7 +139,7 @@ function makeTitleInput(area) {
 	var geohandler = function(r) {
 		position.latitude = r.lngLat.lat;
 		position.longitude = r.lngLat.lng;
-		var center = drawMarker(map, markers, lng, lat, null);
+		var center = drawMarker(position.longitude, position.latitude, null);
 		map.setCenter(center, zoom);
 	};
 
@@ -244,7 +244,7 @@ function createMap(maparea) {
 	return map;
 }
 
-function drawMarker(map, layer, lng, lat, title) {
+function drawMarker(lng, lat, title) {
 	var lonLat = new OpenLayers.LonLat(lng, lat).transform(
 			new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
 			map.getProjectionObject() // to Spherical Mercator Projection
@@ -271,7 +271,7 @@ function drawMarker(map, layer, lng, lat, title) {
 			popup.destroy();
 		});
 	}
-	layer.addMarker(marker);
+	markers.addMarker(marker);
 	return lonLat;
 };
 
@@ -296,7 +296,7 @@ function printMap(url) {
 				lat2 = typeof(lat2) == "undefined" || lat > lat2 ? lat : lat2;
 				lon1 = typeof(lon1) == "undefined" || lng < lon1 ? lng : lon1;
 				lon2 = typeof(lon2) == "undefined" || lng > lon2 ? lng : lon2;
-				drawMarker(map, markers, lng, lat, tiddler.title);
+				drawMarker(lng, lat, tiddler.title);
 			}
 		}
 		return [lon1 || -180, lat1 || -90, lon2 || 180, lat2 || 90];
@@ -305,7 +305,7 @@ function printMap(url) {
 	var center;
 	if(lng && lat) {
 		$(maparea).show();
-		center = drawMarker(map, markers, lng, lat, null);
+		center = drawMarker(lng, lat, null);
 		map.setCenter(center, zoom);
 		var searchurl = "/search?q=near:"+ parseInt(lat,10) +
 			","+parseInt(lng,10) +",1000000";
