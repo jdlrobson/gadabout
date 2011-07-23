@@ -234,14 +234,15 @@ function isTiddlyLink(el) {
 	var hasClass = $(el).hasClass("externalLink");
 	var hostLocation = window.location.protocol + "//" + window.location.host;
 	if(hasClass &&
-		href.indexOf(hostLocation) === 0) {
+		(href[0] === "/" || href.indexOf("/") === -1 ||
+		href.indexOf(hostLocation) === 0)) {
 		href = href.substr(hostLocation.length, href.length);
 		$(el).attr("href", href);
 		$(el).removeClass("externalLink");
 		hasClass = false;
 	}
 	var notTiddlyLink = $(el).hasClass("notTiddlyLink");
-	return !notTiddlyLink && !hasClass && href.indexOf("/") === 0 ? true : false;
+	return !notTiddlyLink && !hasClass ? true : false;
 }
 
 function clickTiddlyLink(ev)  {
