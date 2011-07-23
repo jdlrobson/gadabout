@@ -423,7 +423,7 @@ function constructMenu(newbutton) {
 }
 
 function loadUrl(url, callback, options) {
-	var match = url.match(/\/tiddlers\.form/);
+	var match = url ? url.match(/\/tiddlers\.form/) : false;
 	if(match && match[0]){
 		cache[url] = "Unsupported page";
 		if(callback) {
