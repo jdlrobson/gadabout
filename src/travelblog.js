@@ -103,13 +103,16 @@ function showPublishButton(area) {
 
 function makeTextInput(area) {
 	var tiddler = getTiddler();
-	$("<textarea id='edit-text' />").attr("placeholder", locale.placeholdertext).change(function(ev) {
+	var allowSave = function(ev) {
 		activeTiddler.text = $(ev.target).val();
 		if(connection_status) {
 			showPublishButton(area);
 		}
 		cacheEdit();
-	}).appendTo(area);
+	};
+
+	$("<textarea id='edit-text' />").attr("placeholder", locale.placeholdertext).change(allowSave).
+		blur(allowSave).appendTo(area);
 	if(tiddler) {
 		$("#edit-text").text(tiddler.text)
 	}
