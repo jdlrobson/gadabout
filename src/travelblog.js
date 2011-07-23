@@ -135,15 +135,24 @@ function makeTitleInput(area) {
 			makeTextInput(area);
 		}
 	}
+
+	var geohandler = function(r) {
+		position.latitude = r.lngLat.lat;
+		position.longitude = r.lngLat.lng;
+	};
+
 	// make it find the location lat and lng
 	$("<div id='edit-location' />").geoSearch({
-			service: "nominatim",
-			handler: function(r) {
-				position.latitude = r.lngLat.lat;
-				position.longitude = r.lngLat.lng;
-			}
+			service: "nominatim", handler: geohandler
 		}).appendTo(area);
 	$("#edit-location input").hide();
+
+	$("<a href='#' />").text("Associate this note with a location").click(function(ev) {
+			$("#edit-location-2").toggle();
+		}).appendTo(area);
+	$("<div id='edit-location-2' style='display: none;' />").geoSearch({
+			service: "nominatim", handler: geohandler
+		}).appendTo(area);
 	// load an existing title if it exists
 	if(tiddler) {
 		setTitle(tiddler.title);
