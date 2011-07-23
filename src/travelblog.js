@@ -56,7 +56,7 @@ function loadTiddler(callback) {
 		$.ajax({ url: url, dataType: "json",
 			success: function(tiddler) {
 				activeTiddler = tiddler;
-				callback();
+				callback(tiddler);
 			},
 			error: function() {
 				var title = url.split("/");
@@ -118,6 +118,13 @@ function makeTextInput(area) {
 	}
 }
 
+function showCurrentPosition() {
+	if(typeof(position.latitude) != "undefined" && typeof(position.longitude) != "undefined") {
+		var center = drawMarker(position.longitude, position.latitude, null);
+		map.setCenter(center, zoom);
+	}
+}
+
 function makeTitleInput(area) {
 	var tiddler = getTiddler();
 	var heading = $("<h2>Place: </h2>").appendTo(area);
@@ -142,8 +149,7 @@ function makeTitleInput(area) {
 	var geohandler = function(r) {
 		position.latitude = r.lngLat.lat;
 		position.longitude = r.lngLat.lng;
-		var center = drawMarker(position.longitude, position.latitude, null);
-		map.setCenter(center, zoom);
+		showCurrentPosition();
 		cacheEdit();
 	};
 
@@ -199,13 +205,23 @@ function addDeleteButton(area) {
 }
 
 function makeEditorArea() {
-	loadTiddler(function() {
+	loadTiddler(function(tiddler) {
 		constructMenu(false);
+		if(tiddler) {
+			var lat = tiddler.fields["geo.lat"], lng = tiddler.fields["geo.long"];
+			if(typeof(lng) != "undefined") {
+				position.longitude = lng;
+			}
+			if(typeof(lat) != "undefined") {
+				position.latitude = lat;
+			}
+		}
 		var area = $("#window-edit")[0];
 		addDeleteButton(area);
 		makeTitleInput(area);
 		map = createMap(area);
 		markers = new OpenLayers.Layer.Markers( "Markers" );
+		showCurrentPosition();
 	});
 }
 
