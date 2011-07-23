@@ -198,6 +198,7 @@ function makeEditorArea() {
 		var area = $("#window-edit")[0];
 		addDeleteButton(area);
 		makeTitleInput(area);
+		map = createMap(area);
 	});
 }
 
@@ -231,50 +232,54 @@ function clickTiddlyLink(ev)  {
 
 $("#window a").live("click", clickTiddlyLink);
 
-function printMap(url) {
-	var lng = parseFloat($(".meta .geo .longitude").text(), 10);
-	var lat = parseFloat($(".meta .geo .latitude").text(), 10);
-	var maparea = $("<div />").addClass("mapArea").prependTo("#article")[0];
-	$('<div class="end" />').appendTo("#article");
+function createMap(maparea) {
 	$("<div id='mapdiv' />").appendTo(maparea);
 	OpenLayers.ImgPath = "/";
 	map = new OpenLayers.Map("mapdiv", { theme: null });
 	map.addLayer(new OpenLayers.Layer.OSM()); 
 	zoom = 8;
+	return map;
+}
+
+function drawMarker(map, layer, lng, lat, title) {
+	var lonLat = new OpenLayers.LonLat(lng, lat).transform(
+			new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+			map.getProjectionObject() // to Spherical Mercator Projection
+		);
+	var size = new OpenLayers.Size(8, 8);
+	var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+	var icon = new OpenLayers.Icon("/marker.png", size, offset);
+	var marker = new OpenLayers.Marker(lonLat, icon);
+	if(title) {
+		marker.events.register('dblclick', marker, function(ev) { 
+			printUrl("/" + title);
+			OpenLayers.Event.stop(ev);
+		});
+		var popup;
+		marker.events.register('mouseover', marker, function(ev) {
+			popup = new OpenLayers.Popup(null,
+				lonLat,
+				new OpenLayers.Size(200,70),
+				"<p>" + title + "</p><p>(double click to open)</p>",
+				true);
+			map.addPopup(popup);
+		});
+		marker.events.register('mouseout', marker, function(ev) {
+			popup.destroy();
+		});
+	}
+	layer.addMarker(marker);
+	return lonLat;
+};
+
+function printMap(url) {
+	var lng = parseFloat($(".meta .geo .longitude").text(), 10);
+	var lat = parseFloat($(".meta .geo .latitude").text(), 10);
+	var maparea = $("<div />").addClass("mapArea").prependTo("#article")[0];
+	$('<div class="end" />').appendTo("#article");
+	var map = createMap(maparea);
 	markers = new OpenLayers.Layer.Markers( "Markers" );
 	map.addLayer(markers);
-
-	var drawMarker = function(lng, lat, title) {
-		var lonLat = new OpenLayers.LonLat(lng, lat).transform(
-				new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-				map.getProjectionObject() // to Spherical Mercator Projection
-			);
-		var size = new OpenLayers.Size(8, 8);
-		var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-		var icon = new OpenLayers.Icon("/marker.png", size, offset);
-		var marker = new OpenLayers.Marker(lonLat, icon);
-		if(title) {
-			marker.events.register('dblclick', marker, function(ev) { 
-				printUrl("/" + title);
-				OpenLayers.Event.stop(ev);
-			});
-			var popup;
-			marker.events.register('mouseover', marker, function(ev) {
-				popup = new OpenLayers.Popup(null,
-					lonLat,
-					new OpenLayers.Size(200,70),
-					"<p>" + title + "</p><p>(double click to open)</p>",
-					true);
-				map.addPopup(popup);
-			});
-			marker.events.register('mouseout', marker, function(ev) {
-				popup.destroy();
-			});
-		}
-		$(maparea).show();
-		markers.addMarker(marker);
-		return lonLat;
-	};
 
 	var tiddlersToMarkers = function(tiddlers) {
 		var lat1, lat2, lon1, lon2;
@@ -288,7 +293,7 @@ function printMap(url) {
 				lat2 = typeof(lat2) == "undefined" || lat > lat2 ? lat : lat2;
 				lon1 = typeof(lon1) == "undefined" || lng < lon1 ? lng : lon1;
 				lon2 = typeof(lon2) == "undefined" || lng > lon2 ? lng : lon2;
-				drawMarker(lng, lat, tiddler.title);
+				drawMarker(map, markers, lng, lat, tiddler.title);
 			}
 		}
 		return [lon1 || -180, lat1 || -90, lon2 || 180, lat2 || 90];
@@ -296,7 +301,8 @@ function printMap(url) {
 
 	var center;
 	if(lng && lat) {
-		center = drawMarker(lng, lat, null);
+		$(maparea).show();
+		center = drawMarker(map, markers, lng, lat, null);
 		map.setCenter(center, zoom);
 		var searchurl = "/search?q=near:"+ parseInt(lat,10) +
 			","+parseInt(lng,10) +",1000000";
