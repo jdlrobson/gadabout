@@ -257,7 +257,9 @@ function clickTiddlyLink(ev)  {
 $("#window a").live("click", clickTiddlyLink);
 
 function createMap(maparea) {
-	$("<div id='mapdiv' />").appendTo(maparea);
+	if($("#mapdiv").length === 0) {
+		$("<div id='mapdiv' />").appendTo(maparea);
+	}
 	OpenLayers.ImgPath = "/";
 	map = new OpenLayers.Map("mapdiv", { theme: null });
 	map.addLayer(new OpenLayers.Layer.OSM()); 
