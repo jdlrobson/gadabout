@@ -552,6 +552,7 @@ function setup(editmode) {
 		}
 	});
 }
+var startUrl = window.location.pathname;
 $(document).ready(function() {
 	var _onpopstate = window.onpopstate;
 	window.onpopstate = function(ev) {
@@ -563,6 +564,8 @@ $(document).ready(function() {
 			url = ev.state.url;
 		} else if(cache[window.location.pathname]) {
 			url = window.location.pathname;
+		} else if(window.location.pathname == startUrl) {
+			url = startUrl;
 		}
 		if(url) {
 			printUrl(url);
