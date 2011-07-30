@@ -488,12 +488,14 @@ function printUrl(url) {
 			$("#article", container).appendTo(win);
 		}
 		transformDefaultHtml(url);
+		document.title = $("#header h1", r).text();
 	}
 	if(cache[url]) {
 		success(url);
 	} else {
 		loadUrl(url, function(tiddlers,  textStatus, jqXHR) {
 			if(!tiddlers) {
+				document.title = "Missing note";
 				$("#createLink").remove();
 				$("#window").empty();
 				if(jqXHR.status === 404) {
