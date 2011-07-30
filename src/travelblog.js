@@ -1,4 +1,4 @@
-// version 0.2.5
+// version 0.2.7
 // https://raw.github.com/jdlrobson/gadabout/master/src/travelblog.js
 
 var cache = {};
