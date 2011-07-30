@@ -233,13 +233,13 @@ function isTiddlyLink(el) {
 	var href = $(el).attr("href") || "";
 	var hasClass = $(el).hasClass("externalLink");
 	var hostLocation = window.location.protocol + "//" + window.location.host;
+	// check for externalLink class
 	if(hasClass && href.indexOf("#") === -1 &&
-		(href[0] === "/" || href.indexOf("/") === -1 ||
-		href.indexOf(hostLocation) === 0)) {
+		(href[0] === "/" || href.indexOf("/") === -1)) {
+		hasClass = false;
+	} else if(hasClass && href.indexOf("#") === -1 && href.indexOf(hostLocation) === 0) {
 		href = href.substr(hostLocation.length, href.length);
 		hasClass = false;
-	} else {
-		hasClass = true;
 	}
 	var notTiddlyLink = $(el).hasClass("notTiddlyLink");
 	return !notTiddlyLink && !hasClass ? true : false;
