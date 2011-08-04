@@ -519,7 +519,7 @@ function printUrl(url) {
 function setup(editmode) {
 	if(!editmode) {
 		if($("#win").length === 0) {
-			var body = $("#container").html();
+			var body = $("#article").html();
 			$(document.body).html(["<div id='tbbody'>",
 				"<!--HEADER-->",
 				"<div id='siteheading'>",
@@ -533,6 +533,7 @@ function setup(editmode) {
 				"&select=bag:!takenote_public&sort=title'>list travel notes</a>",
 				"<hr/>",
 				"<div id='window'></div>",
+				"<div id='footer'></div>",
 			"</div>"].join(""));
 			$("#window").html(body);
 		}
