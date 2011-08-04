@@ -557,12 +557,17 @@ function setup(editmode) {
 		}
 	});
 }
+var initialised;
 var startUrl = window.location.pathname;
 $(document).ready(function() {
 	var _onpopstate = window.onpopstate;
 	window.onpopstate = function(ev) {
 		if(_onpopstate) {
 			_onpopstate.apply(this, arguments);
+		}
+		if(!initialised) {
+			initialised = true;
+			return false;
 		}
 		var url;
 		if(ev.state && ev.state.url) {
