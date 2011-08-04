@@ -142,8 +142,8 @@ function makeTitleInput(area) {
 				$("#edit-location .locationInput").val(val);
 				$("#edit-location .find").click();
 			}
-			makeTextInput(area);
 		}
+		$("#edit-text").show();
 	}
 
 	var geohandler = function(r) {
@@ -165,6 +165,10 @@ function makeTitleInput(area) {
 	$("<div id='edit-location-2' style='display: none;' />").geoSearch({
 			service: "nominatim", handler: geohandler
 		}).appendTo(area);
+
+	makeTextInput(area);
+	$("#edit-text").hide();
+
 	// load an existing title if it exists
 	if(tiddler) {
 		setTitle(tiddler.title);
