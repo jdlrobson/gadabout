@@ -533,6 +533,7 @@ function setup(editmode) {
 				"&select=bag:!takenote_public&sort=title'>list travel notes</a>",
 				"<hr/>",
 				"<div id='window'></div>",
+				"<div id='disqus_thread'></div>",
 				"<div id='footer'></div>",
 			"</div>"].join(""));
 			$("#window").html(body);
